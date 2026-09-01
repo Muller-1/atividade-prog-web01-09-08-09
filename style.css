@@ -1,0 +1,83 @@
+:root {
+  --cor-primaria: #2f3e75;
+  --cor-primaria-escura: #1f2a52;
+  --cor-manha: #e8590c;
+  --cor-tarde: #f08c00;
+  --cor-noite: #364fc7;
+}
+
+body {
+  background-color: #f4f6f9;
+}
+
+/* ===================== NAVBAR ===================== */
+.navbar-custom {
+  background: linear-gradient(90deg, var(--cor-primaria-escura), var(--cor-primaria));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ===================== CARDS DE MÉTRICAS ===================== */
+.card-metrica {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-metrica:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.text-orange {
+  color: var(--cor-tarde);
+}
+
+.text-indigo {
+  color: var(--cor-noite);
+}
+
+/* ===================== TABELA ===================== */
+#tabelaReservas {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+#tabelaReservas thead th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ===================== BADGES DE TURNO ===================== */
+.badge-turno {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.4em 0.7em;
+}
+
+.badge-manha {
+  background-color: var(--cor-manha);
+  color: #fff;
+}
+
+.badge-tarde {
+  background-color: var(--cor-tarde);
+  color: #fff;
+}
+
+.badge-noite {
+  background-color: var(--cor-noite);
+  color: #fff;
+}
+
+/* ===================== MODAL ===================== */
+.modal-header {
+  background-color: var(--cor-primaria);
+  color: #fff;
+}
+
+.modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
