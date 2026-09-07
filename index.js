@@ -1,3 +1,5 @@
+import { validacaoAgendamento } from "./modules/validacao.js";
+
 const infraestrutura = [ 
     { bloco: "Bloco A", salas: ["Sala 101", "Sala 102", "Laboratório de Informática 1"] }, 
     { bloco: "Bloco B", salas: ["Sala 201", "Sala 202", "Laboratório de Redes"] }, 
