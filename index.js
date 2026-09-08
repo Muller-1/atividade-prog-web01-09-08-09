@@ -2,18 +2,12 @@ import { validacaoAgendamento } from "./modules/validacao.js";
 import { adicionarAgendamento } from "./modules/estado.js";
 import * as eventos from "./modules/eventos.js";
 import { renderizarTabela } from "./modules/render.js";
+import * as dados from './dados.js';
 
-const infraestrutura = [ 
-    { bloco: "Bloco A", salas: ["Sala 101", "Sala 102", "Laboratório de Informática 1"] }, 
-    { bloco: "Bloco B", salas: ["Sala 201", "Sala 202", "Laboratório de Redes"] }, 
-    { bloco: "Bloco C", salas: ["Auditório Principal", "Laboratório de Física", "Sala de Reuniões"] } 
-]; 
-const agendamentosIniciais = [ 
-    { id: 1, solicitante: "Prof. Carlos Eduardo", bloco: "Bloco A", sala: "Laboratório de Informática 1", data: "2026-09-15", turno: "Manhã" }, 
-    { id: 2, solicitante: "Profa. Ana Maria", bloco: "Bloco B", sala: "Sala 201", data: "2026-09-15", turno: "Noite" } 
-];
+document.getElementById("corpoTabelaReservas").innerHTML = renderizarTabela(dados.agendamentosIniciais);
+
 function carregarSolicitantes() {
-    
+
 }
 
 renderizarTabela();
