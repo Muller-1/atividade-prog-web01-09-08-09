@@ -1,5 +1,6 @@
 import { validacaoAgendamento } from "./modules/validacao.js";
 import { adicionarAgendamento } from "./modules/estado.js";
+import * as eventos from "./modules/eventos.js";
 
 const infraestrutura = [ 
     { bloco: "Bloco A", salas: ["Sala 101", "Sala 102", "Laboratório de Informática 1"] }, 

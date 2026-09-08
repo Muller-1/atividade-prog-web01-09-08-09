@@ -13,5 +13,3 @@ export function getAgendamentos(){
     return agendamentos
 }
 
-adicionarAgendamento({ solicitante: "Teste", bloco: "Bloco A", sala: "Sala 101", data: "2026-10-01", turno: "Tarde" });
-console.log(agendamentos);
