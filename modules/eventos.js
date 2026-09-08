@@ -1,28 +1,90 @@
 import { colisaoAgendamento } from "./validacao.js";
 import { getAgendamentos, adicionarAgendamento, removerAgendamento } from "./estado.js";
 import { infraestrutura } from "../dados.js";
-import { renderizarTabela, atualizarMetricas } from "./render.js";
+import { renderizarTabela } from "./render.js";
+import { lerCriterios, aplicarFiltros } from "./filtros.js";
+import { exibirMetricas } from "./metricas.js";
 
 const formNovoAgendamento = document.getElementById("formNovoAgendamento");
-const modalNovoAgendamento = document.getElementById("modalNovoAgendamento");
+const modalNovoAgendamentoEl = document.getElementById("modalNovoAgendamento");
+const modalNovoAgendamento = new bootstrap.Modal(modalNovoAgendamentoEl);
 const alertaColisao = document.getElementById("alertaColisao");
 const selectBloco = document.getElementById("selectBloco");
 const selectSala = document.getElementById("selectSala");
 const corpoTabela = document.getElementById("corpoTabelaReservas");
+const btnNovoAgendamento = document.getElementById("btnNovoAgendamento");
+const btnCancelar = document.getElementById("btnCancelar");
+const filtroBloco = document.getElementById("filtroBloco");
+const filtroSala = document.getElementById("filtroSala");
+const formFiltros = document.getElementById("formFiltros");
+const btnLimparFiltros = document.getElementById("btnLimparFiltros");
 
-modalNovoAgendamento.addEventListener("shown.bs.modal", function () {
+// A função que qualquer evento chama depois de mexer no estado: lê os
+// filtros atuais, filtra a lista completa, e redesenha tabela + métricas
+// só com o que sobrou do filtro (ou a lista inteira, se nenhum filtro
+// estiver preenchido).
+function atualizarTela() {
+  const criterios = lerCriterios();
+  const listaFiltrada = aplicarFiltros(getAgendamentos(), criterios);
+
+  renderizarTabela(listaFiltrada);
+  exibirMetricas(listaFiltrada);
+}
+
+// Popula um <select> com uma option vazia (o "Todos"/"Selecione...") mais
+// uma option para cada valor do array. Usada tanto pro select da modal
+// quanto pelos dois selects de filtro (bloco e sala).
+function popularOpcoes(select, valores, textoOpcaoPadrao) {
+  select.innerHTML = "";
+
+  const opcaoPadrao = document.createElement("option");
+  opcaoPadrao.value = "";
+  opcaoPadrao.textContent = textoOpcaoPadrao;
+  select.appendChild(opcaoPadrao);
+
+  valores.forEach((valor) => {
+    const opcao = document.createElement("option");
+    opcao.value = valor;
+    opcao.textContent = valor;
+    select.appendChild(opcao);
+  });
+}
+
+// Roda uma vez, ao carregar a página: preenche o select de Bloco da modal
+// e os dois selects do painel de filtro com os dados de infraestrutura.
+function popularSelectsEstaticos() {
+  const nomesDosBlocos = infraestrutura.map((item) => item.bloco);
+
+  const todasAsSalas = [];
+  infraestrutura.forEach((item) => {
+    item.salas.forEach((sala) => todasAsSalas.push(sala));
+  });
+
+  popularOpcoes(selectBloco, nomesDosBlocos, "Selecione...");
+  popularOpcoes(filtroBloco, nomesDosBlocos, "Todos os blocos");
+  popularOpcoes(filtroSala, todasAsSalas, "Todas as salas");
+}
+
+btnNovoAgendamento.addEventListener("click", function () {
+  modalNovoAgendamento.show();
+});
+
+btnCancelar.addEventListener("click", function () {
+  modalNovoAgendamento.hide();
+});
+
+modalNovoAgendamentoEl.addEventListener("shown.bs.modal", function () {
   formNovoAgendamento.reset();
-  alertaColisao.classList.add("d-none");
-
-  selectSala.innerHTML = "";
-  selectSala.disabled = true;
+  alertaColisao.hidden = true;
 
   const opcaoPlaceholder = document.createElement("option");
   opcaoPlaceholder.value = "";
   opcaoPlaceholder.textContent = "Selecione o bloco primeiro";
   opcaoPlaceholder.disabled = true;
   opcaoPlaceholder.selected = true;
+  selectSala.innerHTML = "";
   selectSala.appendChild(opcaoPlaceholder);
+  selectSala.disabled = true;
 });
 
 formNovoAgendamento.addEventListener("submit", function (evento) {
@@ -30,8 +92,8 @@ formNovoAgendamento.addEventListener("submit", function (evento) {
 
     const novoAgendamento = {
         solicitante: document.getElementById("inputSolicitante").value,
-        bloco: document.getElementById("selectBloco").value,
-        sala: document.getElementById("selectSala").value,
+        bloco: selectBloco.value,
+        sala: selectSala.value,
         data: document.getElementById("inputData").value,
         turno: document.getElementById("selectTurno").value
     };
@@ -39,20 +101,25 @@ formNovoAgendamento.addEventListener("submit", function (evento) {
     const houveColisao = colisaoAgendamento(getAgendamentos(), novoAgendamento);
 
     if (houveColisao) {
-    alertaColisao.classList.remove("d-none");
-    return;
-}
+        const mensagem =
+          "Conflito de Agendamento: A " + novoAgendamento.sala +
+          " do " + novoAgendamento.bloco +
+          " já está ocupada no turno da " + novoAgendamento.turno +
+          " na data selecionada.";
 
-    alertaColisao.classList.add("d-none");
+        document.getElementById("mensagemColisao").textContent = mensagem;
+        alertaColisao.hidden = false;
+        return;
+    }
+
+    alertaColisao.hidden = true;
     adicionarAgendamento(novoAgendamento);
-    renderizarTabela();
-    atualizarMetricas();
+    atualizarTela();
 
-    const modalInstancia = bootstrap.Modal.getInstance(modalNovoAgendamento);
-    modalInstancia.hide();
+    modalNovoAgendamento.hide();
 });
 
-selectBloco.addEventListener("change", function (evento) {
+selectBloco.addEventListener("change", function () {
     selectSala.innerHTML = "";
     const blocoEncontrado = infraestrutura.find((blocoAtual) => blocoAtual.bloco === selectBloco.value);
 
@@ -67,11 +134,9 @@ selectBloco.addEventListener("change", function (evento) {
         opcaoBloco.textContent = element;
         selectSala.appendChild(opcaoBloco);
     });
-<<<<<<< HEAD
 
     selectSala.disabled = false;
 });
-
 
 corpoTabela.addEventListener("click", function (evento) {
     const botao = evento.target.closest(".btn-excluir");
@@ -79,19 +144,19 @@ corpoTabela.addEventListener("click", function (evento) {
 
     const id = Number(botao.dataset.id);
     removerAgendamento(id);
-    renderizarTabela();
-    atualizarMetricas();
-});
-=======
-
-
-  
+    atualizarTela();
 });
 
-export function excluirSolicitante(id) {
-  const index = dados.agendamentosIniciais.findIndex(reserva => reserva.id === id);
-  dados.agendamentosIniciais.splice(index, 1);
-  document.getElementById("corpoTabelaReservas").innerHTML = renderizarTabela(dados.agendamentosIniciais);
-}
+formFiltros.addEventListener("input", atualizarTela);
+formFiltros.addEventListener("change", atualizarTela);
 
->>>>>>> main
+btnLimparFiltros.addEventListener("click", function () {
+  document.getElementById("filtroSolicitante").value = "";
+  document.getElementById("filtroData").value = "";
+  filtroBloco.value = "";
+  filtroSala.value = "";
+  atualizarTela();
+});
+
+popularSelectsEstaticos();
+atualizarTela();

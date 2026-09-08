@@ -6,4 +6,3 @@ export function colisaoAgendamento(listaAgendamentos, novoAgendamento) {
     agendamento.turno === novoAgendamento.turno
   );
 }
-
