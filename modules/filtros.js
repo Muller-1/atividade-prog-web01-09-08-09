@@ -12,7 +12,7 @@ export function lerCriterios() {
 export function aplicarFiltros(lista, criterios) {
   return lista.filter(function (reserva) {
 
-    // se o filtro de nome está preenchido e o nome não contém o texto, sai fora
+    // se tem algo digitado no filtro de nome e o nome da reserva não bate, descarta
     if (criterios.solicitante !== "") {
       const nome = reserva.solicitante.toLowerCase();
       const busca = criterios.solicitante.toLowerCase();
@@ -34,7 +34,7 @@ export function aplicarFiltros(lista, criterios) {
       return false;
     }
 
-    // passou por todos os filtros, então essa reserva aparece
+    // se chegou até aqui é porque passou em todos os filtros
     return true;
   });
 }

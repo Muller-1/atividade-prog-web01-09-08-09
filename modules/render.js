@@ -1,4 +1,4 @@
-import { formatarData } from "../utils/data.js";
+import { formatarData } from "../data.js";
 
 export function renderizarTabela(agendamentos) {
   return agendamentos.map(function (reserva) {
@@ -23,6 +23,6 @@ export function renderizarOpcoes(select, valores, textoPadrao) {
 
   const opcaoPadrao = `<option value="">${textoPadrao}</option>`;
 
-  // usa = e não += para substituir as opções antigas em vez de acumular
+  // é = mesmo, não +=, senão as opções antigas ficavam acumulando toda vez
   select.innerHTML = opcaoPadrao + opcoes.join("");
 }

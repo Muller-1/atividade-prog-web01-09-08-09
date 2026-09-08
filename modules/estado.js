@@ -1,6 +1,6 @@
 import { agendamentosIniciais } from "../dados.js";
 
-// slice() faz uma cópia, pra não mexer no array original do dados.js
+// faço uma cópia com slice() pra não sair mexendo direto no array de dados.js
 let reservas = agendamentosIniciais.slice();
 
 export function obterReservas() {
