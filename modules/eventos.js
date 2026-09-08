@@ -1,6 +1,7 @@
 import { validacaoAgendamento } from "./validacao.js";
 import { getAgendamentos, adicionarAgendamento } from "./estado.js";
 import { infraestrutura } from "../dados.js";
+import { renderizarTabela } from "./render.js";
 
 const formNovoAgendamento = document.getElementById("formNovoAgendamento");
 const modalNovoAgendamento = document.getElementById("modalNovoAgendamento");
@@ -43,6 +44,8 @@ formNovoAgendamento.addEventListener("submit", function (evento) {
     }
 
     alertaColisao.classList.add("d-none");
+    adicionarAgendamento(novoAgendamento);
+    renderizarTabela();
 });
 
 selectBloco.addEventListener("change", function (evento) {
