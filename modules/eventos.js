@@ -67,6 +67,7 @@ selectBloco.addEventListener("change", function (evento) {
         opcaoBloco.textContent = element;
         selectSala.appendChild(opcaoBloco);
     });
+<<<<<<< HEAD
 
     selectSala.disabled = false;
 });
@@ -81,3 +82,16 @@ corpoTabela.addEventListener("click", function (evento) {
     renderizarTabela();
     atualizarMetricas();
 });
+=======
+
+
+  
+});
+
+export function excluirSolicitante(id) {
+  const index = dados.agendamentosIniciais.findIndex(reserva => reserva.id === id);
+  dados.agendamentosIniciais.splice(index, 1);
+  document.getElementById("corpoTabelaReservas").innerHTML = renderizarTabela(dados.agendamentosIniciais);
+}
+
+>>>>>>> main
