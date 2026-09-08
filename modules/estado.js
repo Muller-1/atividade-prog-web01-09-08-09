@@ -1,18 +1,30 @@
 import { agendamentosIniciais } from "../dados.js";
 
-let agendamentos = [...agendamentosIniciais];
+// faço uma cópia com slice() pra não sair mexendo direto no array de dados.js
+let reservas = agendamentosIniciais.slice();
 
-export function adicionarAgendamento(dadosNovo) {
-    const idsExistentes = agendamentos.map((agendamento) => agendamento.id);
-    const novoId = idsExistentes.length > 0 ? Math.max(...idsExistentes) + 1 : 1;
-    const dadosNovoId = { id: novoId, ...dadosNovo };
-    agendamentos.push(dadosNovoId);
+export function obterReservas() {
+  return reservas;
 }
 
-export function removerAgendamento(id) {
-    agendamentos = agendamentos.filter((agendamento) => agendamento.id !== id);
+export function adicionarReserva(nova) {
+  reservas.push(nova);
 }
 
-export function getAgendamentos() {
-    return agendamentos;
+export function removerReserva(id) {
+  reservas = reservas.filter(function (reserva) {
+    return reserva.id !== id;
+  });
+}
+
+export function gerarId() {
+  let maiorId = 0;
+
+  reservas.forEach(function (reserva) {
+    if (reserva.id > maiorId) {
+      maiorId = reserva.id;
+    }
+  });
+
+  return maiorId + 1;
 }

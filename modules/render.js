@@ -1,45 +1,28 @@
-import { getAgendamentos } from "./estado.js";
+import { formatarData } from "../data.js";
 
-const alertaVazio = document.getElementById("alertaVazio");
-const tabelaReservas = document.getElementById("tabelaReservas");
-const corpoTabela = document.getElementById("corpoTabelaReservas");
-
-export function renderizarTabela(listaAgendamentos = getAgendamentos()) {
-  if (listaAgendamentos.length === 0) {
-    tabelaReservas.classList.add("d-none");
-    alertaVazio.classList.remove("d-none");
-    corpoTabela.innerHTML = "";
-    return;
-  }
-
-  tabelaReservas.classList.remove("d-none");
-  alertaVazio.classList.add("d-none");
-
-  corpoTabela.innerHTML = listaAgendamentos.map((agendamento) => `
-    <tr>
-      <td>${agendamento.id}</td>
-      <td>${agendamento.solicitante}</td>
-      <td>${agendamento.bloco}</td>
-      <td>${agendamento.sala}</td>
-      <td>${agendamento.data}</td>
-      <td><span class="badge badge-turno">${agendamento.turno}</span></td>
-      <td class="text-end">
-        <button type="button" class="btn btn-sm btn-danger btn-excluir" data-id="${agendamento.id}">
-          <i class="bi bi-trash"></i> Excluir
-        </button>
-      </td>
-    </tr>
-  `).join("");
+export function renderizarTabela(agendamentos) {
+  return agendamentos.map(function (reserva) {
+    return `
+  <tr>
+    <td>${reserva.id}</td>
+    <td>${reserva.solicitante}</td>
+    <td>${reserva.bloco}</td>
+    <td>${reserva.sala}</td>
+    <td>${formatarData(reserva.data)}</td>
+    <td>${reserva.turno}</td>
+    <td class="text-end"><button class="btn btn-sm btn-danger" data-id="${reserva.id}">Excluir</button></td>
+  </tr>
+`;
+  }).join("");
 }
 
-export function atualizarMetricas(listaAgendamentos = getAgendamentos()) {
-  const total = listaAgendamentos.length;
-  const totalManha = listaAgendamentos.filter((a) => a.turno === "Manhã").length;
-  const totalTarde = listaAgendamentos.filter((a) => a.turno === "Tarde").length;
-  const totalNoite = listaAgendamentos.filter((a) => a.turno === "Noite").length;
+export function renderizarOpcoes(select, valores, textoPadrao) {
+  const opcoes = valores.map(function (valor) {
+    return `<option value="${valor}">${valor}</option>`;
+  });
 
-  document.getElementById("metricaTotal").textContent = total;
-  document.getElementById("metricaManha").textContent = totalManha;
-  document.getElementById("metricaTarde").textContent = totalTarde;
-  document.getElementById("metricaNoite").textContent = totalNoite;
+  const opcaoPadrao = `<option value="">${textoPadrao}</option>`;
+
+  // é = mesmo, não +=, senão as opções antigas ficavam acumulando toda vez
+  select.innerHTML = opcaoPadrao + opcoes.join("");
 }
