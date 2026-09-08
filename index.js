@@ -6,21 +6,18 @@ import { exibirMetricas } from "./modules/metricas.js";
 import { validacaoAgendamento } from "./modules/validacao.js";
 import { registrarExclusao } from "./modules/eventos.js";
 
-// ==================== ELEMENTOS USADOS EM VÁRIOS LUGARES ====================
-
+// elementos que vou usar em mais de um lugar do arquivo
 const corpoTabela = document.getElementById("corpoTabelaReservas");
 const selectBloco = document.getElementById("selectBloco");
 const selectSala = document.getElementById("selectSala");
 const formNovoAgendamento = document.getElementById("formNovoAgendamento");
 const alertaColisao = document.getElementById("alertaColisao");
 
-// A instância da modal é criada uma vez só. Criar uma nova a cada clique
-// geraria vários controles pro mesmo elemento e eles empilhariam.
+// só cria a modal uma vez aqui fora. se criasse ela de novo dentro do listener
+// do clique, ia ficar empilhando um bootstrap.Modal em cima do outro
 const modalNovoAgendamento = new bootstrap.Modal(
   document.getElementById("modalNovoAgendamento")
 );
-
-// ==================== ATUALIZAÇÃO DA TELA ====================
 
 function atualizarEstadoVazio(lista) {
   const alerta = document.getElementById("alertaVazio");
@@ -35,8 +32,8 @@ function atualizarEstadoVazio(lista) {
   }
 }
 
-// Função central: todo evento altera o estado e chama esta função,
-// que refaz a tela inteira a partir dele.
+// essa é a função que todo evento chama depois de mexer no estado,
+// ela pega o estado atualizado e redesenha tudo de novo
 function atualizarTela() {
   const criterios = lerCriterios();
   const listaFiltrada = aplicarFiltros(obterReservas(), criterios);
@@ -47,14 +44,13 @@ function atualizarTela() {
   atualizarEstadoVazio(listaFiltrada);
 }
 
-// ==================== CARREGAMENTO DOS SELECTS ====================
-
+// preenche os selects de bloco e sala com o que tem em dados.js
 function carregarSelects() {
   const blocos = infraestrutura.map(function (item) {
     return item.bloco;
   });
 
-  // junta as salas de todos os blocos em uma lista só
+  // aqui eu junto as salas de todos os blocos numa lista só
   const todasAsSalas = [];
 
   infraestrutura.forEach(function (item) {
@@ -71,14 +67,12 @@ function carregarSelects() {
 
   renderizarOpcoes(selectBloco, blocos, "Selecione...");
 
-  // a sala da modal começa vazia, só libera depois de escolher o bloco
+  // o select de sala da modal começa vazio, só é liberado depois que escolhe o bloco
   renderizarOpcoes(selectSala, [], "Selecione...");
 }
 
-// ==================== FILTROS ====================
-
-// O evento input sobe dos campos filhos até o formulário,
-// então um listener só cobre os quatro campos.
+// o evento de input sobe dos campos até o form (event bubbling), por isso
+// um listener só no form já cobre os quatro campos do filtro
 document.getElementById("formFiltros").addEventListener("input", function () {
   atualizarTela();
 });
@@ -92,8 +86,6 @@ document.getElementById("btnLimparFiltros").addEventListener("click", function (
   atualizarTela();
 });
 
-// ==================== MODAL ====================
-
 document.getElementById("btnNovoAgendamento").addEventListener("click", function () {
   alertaColisao.hidden = true;
   modalNovoAgendamento.show();
@@ -103,8 +95,7 @@ document.getElementById("btnCancelar").addEventListener("click", function () {
   modalNovoAgendamento.hide();
 });
 
-// ==================== SELECTS DEPENDENTES ====================
-
+// quando muda o bloco, recarrega o select de sala só com as salas daquele bloco
 selectBloco.addEventListener("change", function () {
   const blocoEscolhido = infraestrutura.find(function (item) {
     return item.bloco === selectBloco.value;
@@ -112,8 +103,8 @@ selectBloco.addEventListener("change", function () {
 
   let salas = [];
 
-  // se o usuário voltar para "Selecione...", o find não acha nada
-  // e ler .salas de undefined derrubaria o script
+  // se voltar pra "Selecione...", o find não acha nenhum bloco e devolve
+  // undefined. tentar ler .salas disso ia quebrar o script
   if (blocoEscolhido !== undefined) {
     salas = blocoEscolhido.salas;
   }
@@ -121,10 +112,8 @@ selectBloco.addEventListener("change", function () {
   renderizarOpcoes(selectSala, salas, "Selecione...");
 });
 
-// ==================== CADASTRO DE NOVA RESERVA ====================
-
 formNovoAgendamento.addEventListener("submit", function (evento) {
-  // sem isso o formulário recarrega a página e o estado se perde
+  // preventDefault pra não deixar o form recarregar a página, senão perde o estado todo
   evento.preventDefault();
 
   const novoAgendamento = {
@@ -148,7 +137,7 @@ formNovoAgendamento.addEventListener("submit", function (evento) {
     document.getElementById("mensagemColisao").textContent = mensagem;
     alertaColisao.hidden = false;
 
-    // o return encerra a função aqui, então a modal não fecha
+    // dá return aqui e não fecha a modal, pra deixar o usuário ver o erro
     return;
   }
 
@@ -157,13 +146,11 @@ formNovoAgendamento.addEventListener("submit", function (evento) {
   modalNovoAgendamento.hide();
   formNovoAgendamento.reset();
 
-  // o reset não limpa as opções de sala, só a seleção
+  // o reset() só limpa o que foi selecionado, as <option> de sala continuam lá
   renderizarOpcoes(selectSala, [], "Selecione...");
 
   atualizarTela();
 });
-
-// ==================== INÍCIO ====================
 
 registrarExclusao(atualizarTela);
 carregarSelects();
