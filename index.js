@@ -6,8 +6,4 @@ import * as dados from './dados.js';
 
 document.getElementById("corpoTabelaReservas").innerHTML = renderizarTabela(dados.agendamentosIniciais);
 
-function carregarSolicitantes() {
-
-}
-
 renderizarTabela();
