@@ -7,7 +7,6 @@ const corpoTabela = document.getElementById("corpoTabelaReservas");
 export function renderizarTabela() {
   const agendamentos = getAgendamentos();
 
-  // Regra do PDF (3.1): lista vazia -> esconde tabela, mostra alerta
   if (agendamentos.length === 0) {
     tabelaReservas.classList.add("d-none");
     alertaVazio.classList.remove("d-none");
@@ -18,8 +17,6 @@ export function renderizarTabela() {
   tabelaReservas.classList.remove("d-none");
   alertaVazio.classList.add("d-none");
 
-  // .map() transforma CADA agendamento em uma string de <tr>...</tr>
-  // .join("") gruda todas essas strings numa só, sem separador nenhum
   corpoTabela.innerHTML = agendamentos.map((agendamento) => `
     <tr>
       <td>${agendamento.id}</td>
