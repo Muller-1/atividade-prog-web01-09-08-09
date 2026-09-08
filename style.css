@@ -8,13 +8,32 @@ section {
   margin-bottom: 40px;
 }
 
-/* Deixa o título principal um pouco mais destacado */
 h1 {
   margin-bottom: 30px;
 }
 
-/* Diminui os subtítulos, que por padrão ficam grandes demais */
+/* Os subtítulos vêm grandes demais por padrão */
 h2 {
   font-size: 1.4rem;
+  margin-bottom: 15px;
+}
+
+/* Espaço entre os cartões de métricas quando eles quebram de linha */
+.card {
+  margin-bottom: 15px;
+}
+
+/* Espaço entre os campos dos filtros */
+#formFiltros .col-md-3 {
+  margin-bottom: 10px;
+}
+
+/* Espaço entre os campos da modal */
+#formNovoAgendamento .form-label {
+  margin-top: 10px;
+}
+
+/* Afasta o alerta e a tabela do botão "Novo Agendamento" */
+#btnNovoAgendamento {
   margin-bottom: 15px;
 }

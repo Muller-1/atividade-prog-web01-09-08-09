@@ -1,21 +1,28 @@
-import {excluirSolicitante} from './eventos.js';
+import { formatarData } from "../utils/data.js";
 
-export function renderizarTabela (agendamentos) {
-  return agendamentos.map(reservas => `
+export function renderizarTabela(agendamentos) {
+  return agendamentos.map(function (reserva) {
+    return `
   <tr>
-    <td>${reservas.id}</td>
-    <td>${reservas.solicitante}</td>
-    <td>${reservas.bloco}</td>
-    <td>${reservas.sala}</td>
-    <td>${reservas.data}</td>
-    <td>${reservas.turno}</td>
-    <td class="text-end"><button class="btn btn-sm btn-danger" data-id="${reservas.id}">Excluir</button></td>
+    <td>${reserva.id}</td>
+    <td>${reserva.solicitante}</td>
+    <td>${reserva.bloco}</td>
+    <td>${reserva.sala}</td>
+    <td>${formatarData(reserva.data)}</td>
+    <td>${reserva.turno}</td>
+    <td class="text-end"><button class="btn btn-sm btn-danger" data-id="${reserva.id}">Excluir</button></td>
   </tr>
-`).join("")}
+`;
+  }).join("");
+}
 
-document.getElementById("corpoTabelaReservas").addEventListener("click", (evento) => {
-  if (evento.target.matches(".btn-danger")) {
-    const id = Number(evento.target.dataset.id);
-    excluirSolicitante(id);
-  }
-});
+export function renderizarOpcoes(select, valores, textoPadrao) {
+  const opcoes = valores.map(function (valor) {
+    return `<option value="${valor}">${valor}</option>`;
+  });
+
+  const opcaoPadrao = `<option value="">${textoPadrao}</option>`;
+
+  // usa = e não += para substituir as opções antigas em vez de acumular
+  select.innerHTML = opcaoPadrao + opcoes.join("");
+}
